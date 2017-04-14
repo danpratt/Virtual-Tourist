@@ -2,7 +2,7 @@
 
 [![Language](http://img.shields.io/badge/language-swift-brightgreen.svg?style=flat)](https://developer.apple.com/swift)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE.md)
-[![Build](https://img.shields.io/vso/build/larsbrinkhoff/953a34b9-5966-4923-a48a-c41874cfb5f5/1.svg)]
+[![Build](https://img.shields.io/vso/build/larsbrinkhoff/953a34b9-5966-4923-a48a-c41874cfb5f5/1.svg)](http://www.blaumagier.com)
 
 ## Description
 
