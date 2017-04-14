@@ -38,10 +38,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         
         if longPressRecognizer.state == .began {
             let position = longPressRecognizer.location(in: pinMapView)
-            print("Position is: \(position)")
-            
             let coordinate = pinMapView.convert(position, toCoordinateFrom: pinMapView)
-            print("Coordinate is: \(coordinate)")
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             albumAnnotations.append(annotation)
@@ -52,7 +49,6 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     }
     
     // MARK: - Delegate Methods
-    
     
     // Pin view for displaying all pins
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -72,9 +68,12 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         return albumAnnotationsView
     }
     
-    // Updates the MapView when an annotation is added
-    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        print("added")
+    // TODO: - Delete before release
+    // Verify annotations coordinates update
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
+        for annotation in albumAnnotations {
+            print(annotation.coordinate)
+        }
     }
     
 }
