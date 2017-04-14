@@ -27,4 +27,4 @@ This app is not intended to be released to the public, however, you are welcome 
 This project is not intended for anything other than educational use, and therefor contributions are not being sought out.
 
 ## License
-[MIT License](LICENSE.txt)
+[MIT License](LICENSE.md)
