@@ -8,7 +8,7 @@
 
 This is an iOS app written in Swift that allows a user to drop a pin on a map, and then see photos taken in that area.
 
-##Technologies Used In Application:
+## Technologies Used In Application:
 
 * Swift 3.1
 * CoreData
