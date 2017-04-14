@@ -8,22 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		6551C00A1EA13EAE004DCEA1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6551C0091EA13EAE004DCEA1 /* AppDelegate.swift */; };
-		6551C00C1EA13EAE004DCEA1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6551C00B1EA13EAE004DCEA1 /* ViewController.swift */; };
 		6551C00F1EA13EAE004DCEA1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6551C00D1EA13EAE004DCEA1 /* Main.storyboard */; };
 		6551C0121EA13EAE004DCEA1 /* Virtual_Tourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6551C0101EA13EAE004DCEA1 /* Virtual_Tourist.xcdatamodeld */; };
 		6551C0141EA13EAE004DCEA1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6551C0131EA13EAE004DCEA1 /* Assets.xcassets */; };
 		6551C0171EA13EAE004DCEA1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6551C0151EA13EAE004DCEA1 /* LaunchScreen.storyboard */; };
+		6551C0221EA1554D004DCEA1 /* VTPinMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6551C0211EA1554D004DCEA1 /* VTPinMapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6551C0061EA13EAE004DCEA1 /* Virtual Tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virtual Tourist.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6551C0091EA13EAE004DCEA1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6551C00B1EA13EAE004DCEA1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		6551C00E1EA13EAE004DCEA1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6551C0111EA13EAE004DCEA1 /* Virtual_Tourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Virtual_Tourist.xcdatamodel; sourceTree = "<group>"; };
 		6551C0131EA13EAE004DCEA1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6551C0161EA13EAE004DCEA1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6551C0181EA13EAE004DCEA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6551C0211EA1554D004DCEA1 /* VTPinMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VTPinMapViewController.swift; path = "Virtual Tourist/Controllers/VTPinMapViewController.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +58,8 @@
 			children = (
 				6551C01E1EA14DF0004DCEA1 /* Model */,
 				6551C01F1EA14DFF004DCEA1 /* View */,
+				6551C0241EA155FD004DCEA1 /* Controller */,
 				6551C0201EA14E07004DCEA1 /* Supporting */,
-				6551C00B1EA13EAE004DCEA1 /* ViewController.swift */,
 			);
 			path = "Virtual Tourist";
 			sourceTree = "<group>";
@@ -67,7 +67,7 @@
 		6551C01E1EA14DF0004DCEA1 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				6551C0101EA13EAE004DCEA1 /* Virtual_Tourist.xcdatamodeld */,
+				6551C0231EA155BC004DCEA1 /* VT Model */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -89,6 +89,23 @@
 				6551C0181EA13EAE004DCEA1 /* Info.plist */,
 			);
 			name = Supporting;
+			sourceTree = "<group>";
+		};
+		6551C0231EA155BC004DCEA1 /* VT Model */ = {
+			isa = PBXGroup;
+			children = (
+				6551C0101EA13EAE004DCEA1 /* Virtual_Tourist.xcdatamodeld */,
+			);
+			name = "VT Model";
+			sourceTree = "<group>";
+		};
+		6551C0241EA155FD004DCEA1 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				6551C0211EA1554D004DCEA1 /* VTPinMapViewController.swift */,
+			);
+			name = Controller;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,9 +181,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6551C00C1EA13EAE004DCEA1 /* ViewController.swift in Sources */,
 				6551C0121EA13EAE004DCEA1 /* Virtual_Tourist.xcdatamodeld in Sources */,
 				6551C00A1EA13EAE004DCEA1 /* AppDelegate.swift in Sources */,
+				6551C0221EA1554D004DCEA1 /* VTPinMapViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
