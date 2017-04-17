@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 // MARK: - VTPinMapViewController Class
 class VTPinMapViewController: UIViewController, MKMapViewDelegate {
@@ -15,6 +16,14 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     // MARK: - Class Constants
     let minPressDuration = 0.75
     var albumAnnotations = [MKPointAnnotation]()
+    var savedStateInfo: [SaveState] = []
+    var firstLoad = true
+    
+    // Delegate
+    let delegate = UIApplication.shared.delegate as! AppDelegate
+    
+    // Entity Names
+    private let SaveStateKey = "SaveState"
     
     // MARK: - IBOutlets
     @IBOutlet var longPressRecognizer: UILongPressGestureRecognizer!
@@ -24,11 +33,8 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
 
         // Setup long press recognizer
-        longPressRecognizer.minimumPressDuration = minPressDuration
-        longPressRecognizer.delaysTouchesBegan = true
-        pinMapView.addGestureRecognizer(longPressRecognizer)
-        pinMapView.delegate = self
-        
+        setupLongPress()
+        setupMapRegion()
     }
     
 
@@ -45,6 +51,40 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             pinMapView.addAnnotation(annotation)
         }
         
+        
+    }
+    
+    // MARK: - Private Setup Methods
+    
+    // Sets up the long press gesture, and adds it to the map view
+    private func setupLongPress() {
+        longPressRecognizer.minimumPressDuration = minPressDuration
+        longPressRecognizer.delaysTouchesBegan = true
+        pinMapView.addGestureRecognizer(longPressRecognizer)
+        pinMapView.delegate = self
+    }
+    
+    // Sets the map up from where the user left off
+    private func setupMapRegion() {
+        let fetchedSaveStateController = getFetchControllerFor(entityNamed: SaveStateKey, inContext: delegate.stack.context)
+        try? fetchedSaveStateController.performFetch()
+        savedStateInfo = fetchedSaveStateController.fetchedObjects as! [SaveState]
+        if savedStateInfo.count > 0 {
+            let savedStateCoords = savedStateInfo.popLast()!
+            let coord = CLLocationCoordinate2DMake((savedStateCoords.latitude), (savedStateCoords.longitude))
+            let span = MKCoordinateSpanMake((savedStateCoords.zoomLatitude), (savedStateCoords.zoomLongitude))
+            let region = MKCoordinateRegionMake(coord, span)
+            pinMapView.setRegion(region, animated: true)
+        }
+    }
+    
+    // MARK: - Private Fetch Methods
+    
+    private func getFetchControllerFor(entityNamed entityName: String, inContext context: NSManagedObjectContext) -> NSFetchedResultsController<NSFetchRequestResult> {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        fetchRequest.sortDescriptors = []
+        
+        return NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         
     }
     
@@ -66,6 +106,34 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         }
         
         return albumAnnotationsView
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        
+        if firstLoad {
+            firstLoad = false
+        } else {
+            // Setup the save info
+            let region = mapView.region
+            let coords = region.center
+            let zoom = region.span
+            let lat = coords.latitude
+            let lon = coords.longitude
+            let zLat = zoom.latitudeDelta
+            let zLon = zoom.longitudeDelta
+            
+            // Make sure we aren't storing more data than we need
+            if savedStateInfo.count > 0 {
+                for save in savedStateInfo {
+                    delegate.stack.context.delete(save)
+                }
+            }
+            
+            // Save the map position
+            savedStateInfo.append(SaveState(latitude: lat, longitude: lon, zoomLatitude: zLat, zoomLongitude: zLon, context: delegate.stack.context))
+            delegate.stack.save()
+        }
+        
     }
     
     // TODO: - Delete before release
