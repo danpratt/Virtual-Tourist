@@ -14,7 +14,7 @@ import CoreData
 class VTPinMapViewController: UIViewController, MKMapViewDelegate {
 
     // MARK: - Class Constants
-    let minPressDuration = 0.75
+    let minPressDuration = 0.6
     var albumAnnotations = [MKPointAnnotation]()
     var savedStateInfo: [SaveState] = []
     var firstLoad = true
