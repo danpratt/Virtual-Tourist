@@ -16,7 +16,8 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     // MARK: - Class Constants
     let minPressDuration = 0.6
     var albumAnnotations = [MKPointAnnotation]()
-    var savedStateInfo: [SaveState] = []
+    var pinData: [Pin] = []
+    var savedStateData: [SaveState] = []
     var firstLoad = true
     
     // Delegate
@@ -24,6 +25,11 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     
     // Entity Names
     private let SaveStateKey = "SaveState"
+    private let PinKey = "Pin"
+    private let PhotoKey = "Photo"
+    
+    // Variables used to update pin location
+    var pinIndexToUpdate: Int = -1
     
     // MARK: - IBOutlets
     @IBOutlet var longPressRecognizer: UILongPressGestureRecognizer!
@@ -34,7 +40,12 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
 
         // Setup long press recognizer
         setupLongPress()
+        
+        // Setup Starting Map View
         setupMapRegion()
+        
+        // Setup Existing Pins
+        setupPinData()
     }
     
 
@@ -49,9 +60,12 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             annotation.coordinate = coordinate
             albumAnnotations.append(annotation)
             pinMapView.addAnnotation(annotation)
+            
+            // Store and save to CoreData
+            pinData.append(Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: delegate.stack.context))
+            print(pinData.count)
+            delegate.stack.save()
         }
-        
-        
     }
     
     // MARK: - Private Setup Methods
@@ -68,13 +82,32 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     private func setupMapRegion() {
         let fetchedSaveStateController = getFetchControllerFor(entityNamed: SaveStateKey, inContext: delegate.stack.context)
         try? fetchedSaveStateController.performFetch()
-        savedStateInfo = fetchedSaveStateController.fetchedObjects as! [SaveState]
-        if savedStateInfo.count > 0 {
-            let savedStateCoords = savedStateInfo.popLast()!
+        savedStateData = fetchedSaveStateController.fetchedObjects as! [SaveState]
+        if savedStateData.count > 0 {
+            let savedStateCoords = savedStateData.popLast()!
             let coord = CLLocationCoordinate2DMake((savedStateCoords.latitude), (savedStateCoords.longitude))
             let span = MKCoordinateSpanMake((savedStateCoords.zoomLatitude), (savedStateCoords.zoomLongitude))
             let region = MKCoordinateRegionMake(coord, span)
             pinMapView.setRegion(region, animated: true)
+        }
+    }
+    
+    // Sets up the existing pins
+    private func setupPinData() {
+        // Fetch existing results
+        let fetchedPinController = getFetchControllerFor(entityNamed: PinKey, inContext: delegate.stack.context)
+        try? fetchedPinController.performFetch()
+        pinData = fetchedPinController.fetchedObjects as! [Pin]
+        
+        // Load results into the annotations array
+        if pinData.count > 0 {
+            for pin in pinData {
+                let coordinate = CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude)
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = coordinate
+                albumAnnotations.append(annotation)
+                pinMapView.addAnnotation(annotation)
+            }
         }
     }
     
@@ -108,6 +141,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         return albumAnnotationsView
     }
     
+    // When the user moves the map around, save the new region so we can load it the next time the application launches
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         
         if firstLoad {
@@ -123,14 +157,14 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             let zLon = zoom.longitudeDelta
             
             // Make sure we aren't storing more data than we need
-            if savedStateInfo.count > 0 {
-                for save in savedStateInfo {
+            if savedStateData.count > 0 {
+                for save in savedStateData {
                     delegate.stack.context.delete(save)
                 }
             }
             
             // Save the map position
-            savedStateInfo.append(SaveState(latitude: lat, longitude: lon, zoomLatitude: zLat, zoomLongitude: zLon, context: delegate.stack.context))
+            savedStateData.append(SaveState(latitude: lat, longitude: lon, zoomLatitude: zLat, zoomLongitude: zLon, context: delegate.stack.context))
             delegate.stack.save()
         }
         
@@ -139,9 +173,28 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     // TODO: - Delete before release
     // Verify annotations coordinates update
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
-        for annotation in albumAnnotations {
-            print(annotation.coordinate)
+        if newState.hashValue != 0 {
+            for (index, pin) in pinData.enumerated() {
+                if view.annotation?.coordinate.latitude == pin.latitude && view.annotation?.coordinate.longitude == pin.longitude && oldState.hashValue == 0 {
+                    pinIndexToUpdate = index  // set the index that we will be updating
+                }
+            }
+        } else {
+            if pinIndexToUpdate != -1 {
+                guard let coordinate = view.annotation?.coordinate else {
+                    print("Error getting new coordinate")
+                    return
+                }
+                pinData[pinIndexToUpdate].latitude = coordinate.latitude
+                pinData[pinIndexToUpdate].longitude = coordinate.longitude
+                // Set pinIndexToUpdate back to -1 so we don't have any accidents later on
+                pinIndexToUpdate = -1
+                // save to CoreData
+                delegate.stack.save()
+            }
         }
+        
+        
     }
     
 }
