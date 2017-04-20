@@ -27,19 +27,16 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         if let lat = pin?.latitude, let long = pin?.longitude {
             locationMap.setRegion(MKCoordinateRegionMake(CLLocationCoordinate2DMake(lat, long), MKCoordinateSpanMake(1, 1)), animated: true)
             
+            // get the flow layout applied
+            didRotate(self)
+            
+            // Check for rotation
+            NotificationCenter.default.addObserver(self, selector: #selector(didRotate(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+            
         }
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-
-        // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 
     /*
     // MARK: - Navigation
@@ -55,7 +52,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
 
@@ -80,7 +77,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         let space: CGFloat = flickrPhotosFlowLayout.sectionInset.left
         
         // set number of items in a row.  3 for portrait, 5 for landscape
-        var memesInRow: CGFloat {
+        var photosInRow: CGFloat {
             if size.height > size.width {
                 return 3
             } else {
@@ -90,11 +87,12 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         
         // calculate item dimensions based on screen width
         // Create constant for width, to make calculation easier to read
-        let width = size.width
+        // Subtract 32 to compensate for auto layout setup
+        let width = size.width - 32
         // Remove the spaces between items from the available screen real estate to the items
-        let widthAvailableToItems = width - ((memesInRow + 1) * space)
+        let widthAvailableToItems = width - ((photosInRow + 1) * space)
         // Using the available real estate, split it up depending on how many items we want to display based on orientation
-        let itemSize = widthAvailableToItems / memesInRow
+        let itemSize = (widthAvailableToItems / photosInRow)
         
         // Now just setup the item as a square with the size we figured out
         // Using squares because they are much more visually appealing
@@ -103,6 +101,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     
     // Get new screen size and update flowLayout when the screen rotates
     func didRotate(_: Any) {
+        print("Did rotate")
         setupFlowLayout(view.frame.size)
     }
 
