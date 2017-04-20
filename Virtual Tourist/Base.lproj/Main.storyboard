@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F54b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4MS-Oj-NVB">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F60a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4MS-Oj-NVB">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -60,6 +60,7 @@
                     <connections>
                         <outlet property="longPressRecognizer" destination="CVe-Og-W3P" id="9fu-SJ-Zla"/>
                         <outlet property="pinMapView" destination="z58-La-wiG" id="B2R-KM-4Ie"/>
+                        <segue destination="grP-1C-y1G" kind="show" identifier="AlbumSegue" id="a5E-lo-kYE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="80n-R2-HgD" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -70,6 +71,86 @@
                 </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="664.79999999999995" y="204.64767616191907"/>
+        </scene>
+        <!--Location Photos View Controller-->
+        <scene sceneID="zFN-ez-gFo">
+            <objects>
+                <viewController storyboardIdentifier="FlickrPhotoAlbumView" id="grP-1C-y1G" customClass="VTLocationPhotosViewController" customModule="Virtual_Tourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="GeF-If-FHw"/>
+                        <viewControllerLayoutGuide type="bottom" id="Tf2-Xq-Ohi"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ohy-1r-6YH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oXa-wK-sHy">
+                                <rect key="frame" x="0.0" y="64" width="375" height="180"/>
+                            </mapView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lrK-96-Iof">
+                                <rect key="frame" x="0.0" y="242" width="375" height="425"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="3" minimumInteritemSpacing="3" id="r7A-8S-gV1">
+                                    <size key="itemSize" width="100" height="100"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="3" minY="3" maxX="3" maxY="3"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="FlickrPhotoCell" id="VHw-Iy-FaZ">
+                                        <rect key="frame" x="3" y="3" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LGD-ie-fLG">
+                                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                                </imageView>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="imc-eF-A8u">
+                                                    <rect key="frame" x="40" y="40" width="20" height="20"/>
+                                                </activityIndicatorView>
+                                            </subviews>
+                                        </view>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="LGD-ie-fLG" firstAttribute="centerX" secondItem="imc-eF-A8u" secondAttribute="centerX" id="4dJ-qu-ybB"/>
+                                            <constraint firstItem="LGD-ie-fLG" firstAttribute="leading" secondItem="VHw-Iy-FaZ" secondAttribute="leading" id="INI-7h-KZP"/>
+                                            <constraint firstItem="LGD-ie-fLG" firstAttribute="centerY" secondItem="imc-eF-A8u" secondAttribute="centerY" id="Uru-Cd-XKC"/>
+                                            <constraint firstItem="LGD-ie-fLG" firstAttribute="top" secondItem="VHw-Iy-FaZ" secondAttribute="top" id="lQ9-QV-enC"/>
+                                            <constraint firstAttribute="trailing" secondItem="LGD-ie-fLG" secondAttribute="trailing" id="qwg-73-KCU"/>
+                                            <constraint firstAttribute="bottom" secondItem="LGD-ie-fLG" secondAttribute="bottom" id="yds-wf-hHf"/>
+                                        </constraints>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="grP-1C-y1G" id="fAI-Aj-LU3"/>
+                                    <outlet property="delegate" destination="grP-1C-y1G" id="BN1-LD-Y2p"/>
+                                    <outlet property="prefetchDataSource" destination="grP-1C-y1G" id="tuu-mo-i0s"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="lrK-96-Iof" firstAttribute="top" secondItem="oXa-wK-sHy" secondAttribute="bottom" constant="-2" id="8cp-LJ-Z1Z"/>
+                            <constraint firstAttribute="trailing" secondItem="oXa-wK-sHy" secondAttribute="trailing" id="ILL-Ln-Dle"/>
+                            <constraint firstItem="lrK-96-Iof" firstAttribute="leading" secondItem="Ohy-1r-6YH" secondAttribute="leadingMargin" constant="-16" id="RhV-m0-S2G"/>
+                            <constraint firstItem="oXa-wK-sHy" firstAttribute="top" secondItem="GeF-If-FHw" secondAttribute="bottom" id="Z0s-3T-OIB"/>
+                            <constraint firstItem="lrK-96-Iof" firstAttribute="top" secondItem="GeF-If-FHw" secondAttribute="bottom" constant="178" id="Z66-dK-UgV"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="lrK-96-Iof" secondAttribute="trailing" constant="-16" id="isN-iR-RTe"/>
+                            <constraint firstItem="lrK-96-Iof" firstAttribute="bottom" secondItem="Tf2-Xq-Ohi" secondAttribute="top" id="laZ-2d-QrU"/>
+                            <constraint firstItem="oXa-wK-sHy" firstAttribute="leading" secondItem="Ohy-1r-6YH" secondAttribute="leading" id="p6v-Mm-Ccb"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="flickrPhotosCollectionView" destination="lrK-96-Iof" id="6Bw-SJ-Anh"/>
+                        <outlet property="flickrPhotosFlowLayout" destination="r7A-8S-gV1" id="7R7-nl-uaZ"/>
+                        <outlet property="locationMap" destination="oXa-wK-sHy" id="2Ck-kz-Ofl"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iA5-3h-gcb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1428" y="204.64767616191907"/>
         </scene>
     </scenes>
 </document>

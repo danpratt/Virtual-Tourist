@@ -170,8 +170,8 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         
     }
     
-    // TODO: - Delete before release
-    // Verify annotations coordinates update
+    // When an annoation is being dragged, find the Pin data that coorisponds to the annotation
+    // After the annotation's coordinates have been changes, change the lat/long of the Pin data as well
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
         if newState.hashValue != 0 {
             for (index, pin) in pinData.enumerated() {
@@ -193,8 +193,32 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
                 delegate.stack.save()
             }
         }
-        
-        
+    }
+    
+    // MARK: - Segue Functios
+    
+    // Map Delegate Method to call segue when user taps on pin
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let coordinate = view.annotation?.coordinate else {
+            print("Unable to get coordinate for segue")
+            return
+        }
+        performSegue(withIdentifier: "AlbumSegue", sender: coordinate)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "AlbumSegue" {
+            
+            let coordinate = sender as! CLLocationCoordinate2D
+            let flickrAlbumView = segue.destination as! VTLocationPhotosViewController
+            for (index, pin) in pinData.enumerated() {
+                if pin.latitude == coordinate.latitude && pin.longitude == coordinate.longitude {
+                    flickrAlbumView.pin = pinData[index]
+                    break
+                }
+            }
+            
+        }
     }
     
 }

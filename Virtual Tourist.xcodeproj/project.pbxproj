@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		65292C381EA90C6600EF1A01 /* VTLocationPhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65292C371EA90C6600EF1A01 /* VTLocationPhotosViewController.swift */; };
 		6551C00A1EA13EAE004DCEA1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6551C0091EA13EAE004DCEA1 /* AppDelegate.swift */; };
 		6551C00F1EA13EAE004DCEA1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6551C00D1EA13EAE004DCEA1 /* Main.storyboard */; };
 		6551C0121EA13EAE004DCEA1 /* Virtual_Tourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6551C0101EA13EAE004DCEA1 /* Virtual_Tourist.xcdatamodeld */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		65292C371EA90C6600EF1A01 /* VTLocationPhotosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VTLocationPhotosViewController.swift; path = "Virtual Tourist/Controllers/VTLocationPhotosViewController.swift"; sourceTree = "<group>"; };
 		6551C0061EA13EAE004DCEA1 /* Virtual Tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virtual Tourist.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6551C0091EA13EAE004DCEA1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6551C00E1EA13EAE004DCEA1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 		6551BFFD1EA13EAE004DCEA1 = {
 			isa = PBXGroup;
 			children = (
+				65292C371EA90C6600EF1A01 /* VTLocationPhotosViewController.swift */,
 				6551C0081EA13EAE004DCEA1 /* Virtual Tourist */,
 				6551C0071EA13EAE004DCEA1 /* Products */,
 			);
@@ -232,6 +235,7 @@
 				65CBE37B1EA7D26700044F6C /* Pin+CoreDataClass.swift in Sources */,
 				6551C00A1EA13EAE004DCEA1 /* AppDelegate.swift in Sources */,
 				6551C0221EA1554D004DCEA1 /* VTPinMapViewController.swift in Sources */,
+				65292C381EA90C6600EF1A01 /* VTLocationPhotosViewController.swift in Sources */,
 				65CBE37D1EA7D26700044F6C /* Photo+CoreDataClass.swift in Sources */,
 				65E466C61EA5544500A5FC57 /* SaveState+CoreDataProperties.swift in Sources */,
 				65CBE37E1EA7D26700044F6C /* Photo+CoreDataProperties.swift in Sources */,
