@@ -101,7 +101,6 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     
     // Get new screen size and update flowLayout when the screen rotates
     func didRotate(_: Any) {
-        print("Did rotate")
         setupFlowLayout(view.frame.size)
     }
 
