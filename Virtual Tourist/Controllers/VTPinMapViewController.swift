@@ -200,12 +200,18 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
                     print("Error getting new coordinate")
                     return
                 }
+                
+                // update the coordinate in our pin CoreData object
                 pinData[pinIndexToUpdate].latitude = coordinate.latitude
                 pinData[pinIndexToUpdate].longitude = coordinate.longitude
+                
+                // Delete the old photos and load up new ones at the new coordinates
+                pinData[pinIndexToUpdate].album = nil
+                FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, page: nil, pin: pinData[pinIndexToUpdate])
+                
                 // Set pinIndexToUpdate back to -1 so we don't have any accidents later on
                 pinIndexToUpdate = -1
                 // save to CoreData
-                pinMapView.reloadInputViews()
                 delegate.stack.save()
             }
         }
