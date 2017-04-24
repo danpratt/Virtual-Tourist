@@ -7,13 +7,13 @@
 //
 
 import Foundation
-
+import UIKit
+import CoreData
 
 class FlickrNetworkSearch {
     
-    
     // Gets images from Flickr near a lat/long coordinate
-    static func findFlickrImagesAtLocation(latitude: Double, longitude: Double, page: Int?) {
+    static func findFlickrImagesAtLocation(latitude: Double, longitude: Double, page: Int?, pin: Pin) {
         
         // Build a URL
         let url = URL(string: Constants.getUrlFromLocation(latitude: latitude, longitude: longitude, page: page))
@@ -76,15 +76,21 @@ class FlickrNetworkSearch {
                 }
                 
                 let randomPageNumber = Int(arc4random_uniform(UInt32(numPages)))
-                findFlickrImagesAtLocation(latitude: latitude, longitude: longitude, page: randomPageNumber)
+                findFlickrImagesAtLocation(latitude: latitude, longitude: longitude, page: randomPageNumber, pin: pin)
+            } else // We have found our random page load up the photo data
+                {
+                    for photo in photoArray {
+                        let farm = photo[Constants.FlickrResponseKeys.Farm] as! Int
+                        let id = photo[Constants.FlickrResponseKeys.Id] as! String
+                        let server = photo[Constants.FlickrResponseKeys.Server] as! String
+                        let secret = photo[Constants.FlickrResponseKeys.Secret] as! String
+                        let title = photo[Constants.FlickrResponseKeys.Title] as! String
+                        
+                        let _ = Photo(serverID: server, farm: farm, id: id, secret: secret, title: title, pin: pin, context: (UIApplication.shared.delegate as! AppDelegate).stack.context)
+                    }
+                    (UIApplication.shared.delegate as! AppDelegate).stack.save()
             }
-            
-            
-            
-            
-            
         }
-        
         task.resume()
 
     }

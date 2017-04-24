@@ -19,6 +19,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     var pinData: [Pin] = []
     var savedStateData: [SaveState] = []
     var firstLoad = true
+    var dragging = false
     
     // Delegate
     let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -64,10 +65,20 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             // Store and save to CoreData
             pinData.append(Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: delegate.stack.context))
             
-            FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, page: nil)
+            FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, page: nil, pin: pinData[findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)])
             
             delegate.stack.save()
         }
+    }
+    
+    // MARK: - Private Helper Methods
+    func findPinIndexat(latitude: Double, longitude: Double) -> Int {
+        for (index, pin) in pinData.enumerated() {
+            if latitude == pin.latitude && longitude == pin.longitude {
+                return index
+            }
+        }
+        return -1
     }
     
     // MARK: - Private Setup Methods

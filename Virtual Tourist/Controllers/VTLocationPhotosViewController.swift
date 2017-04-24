@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 private let reuseIdentifier = "FlickrPhotoCell"
 
@@ -15,6 +16,10 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     
     // MARK: - Variables
     var pin: Pin?
+    var photos: [Photo]?
+    
+    // Delegate
+    let delegate = UIApplication.shared.delegate as! AppDelegate
     
     // MARK: - IBOutlets
     @IBOutlet weak var flickrPhotosCollectionView: UICollectionView!
@@ -27,6 +32,13 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         if let lat = pin?.latitude, let long = pin?.longitude {
             locationMap.setRegion(MKCoordinateRegionMake(CLLocationCoordinate2DMake(lat, long), MKCoordinateSpanMake(1, 1)), animated: true)
             
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = locationMap.region.center
+            locationMap.addAnnotation(annotation)
+            
+            // Load the photos
+            photos = pin?.album?.allObjects as? [Photo]
+            
             // get the flow layout applied
             didRotate(self)
             
@@ -34,39 +46,54 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
             NotificationCenter.default.addObserver(self, selector: #selector(didRotate(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
             
         }
+        
+        self.reloadInputViews()
 
     }
 
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-    // MARK: UICollectionViewDataSource
-
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-
+    // MARK: - Collection View Methods
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 6
+        return photos?.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FlickrPhotoCollectionViewCell
+        let photoInfo = photos?[indexPath.row]
+        
+        if cell.flickrImage.image == nil && !cell.activity.isAnimating {
+            cell.activity.startAnimating()
+        }
+        
         // Configure the cell
+        if let imageData = photoInfo?.rawImageData {
+            cell.activity.stopAnimating()
+            cell.flickrImage.image = UIImage(data: imageData as Data)
+        } else {
+            downloadImage(urlString: (photoInfo?.imageURLString!)!, completionHandler: { (image, data) in
+                cell.activity.stopAnimating()
+                cell.flickrImage.image = image
+                photoInfo?.rawImageData = data
+                self.delegate.stack.save()
+            })
+        }
     
         return cell
+    }
+    
+    // Handle downloading image
+    private func downloadImage(urlString: String, completionHandler handler: @escaping (_ image: UIImage, _ data: NSData) -> Void){
+        
+        DispatchQueue.global(qos: .userInitiated).async { () -> Void in
+            
+            if let url = URL(string: urlString), let imgData = try? Data(contentsOf: url), let img = UIImage(data: imgData) {
+                
+                // all set and done, run the completion closure!
+                DispatchQueue.main.async(execute: { () -> Void in
+                    handler(img, imgData as NSData)
+                })
+            }
+        }
     }
     
     // MARK: Flow Layout

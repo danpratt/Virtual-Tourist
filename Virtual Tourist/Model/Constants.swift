@@ -17,7 +17,7 @@ struct Constants {
         static let KMRadius = "15" // Setting for how big a radius of circle around given coordinates to show images from
         static let Format = "json"
         static let DisableJSONCallback = "1" /* 1 means "yes" */
-        static let PerPage = "24"
+        static let PerPage = "30"
     }
     
     // MARK: - Argument Keys
@@ -49,6 +49,12 @@ struct Constants {
         static let MediumURL = "url_m"
         static let Pages = "pages"
         static let Total = "total"
+        
+        // Server related response keys
+        static let Farm = "farm"
+        static let Id = "id"
+        static let Server = "server"
+        static let Secret = "secret"
     }
     
     static func getUrlFromLocation(latitude: Double, longitude: Double, page: Int?) -> String {
