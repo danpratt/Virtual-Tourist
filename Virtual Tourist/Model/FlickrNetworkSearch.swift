@@ -13,10 +13,10 @@ class FlickrNetworkSearch {
     
     
     // Gets images from Flickr near a lat/long coordinate
-    static func findFlickrImagesAtLocation(latitude: Double, longitude: Double) {
+    static func findFlickrImagesAtLocation(latitude: Double, longitude: Double, page: Int?) {
         
         // Build a URL
-        let url = URL(string: Constants.getUrlFromLocation(latitude: latitude, longitude: longitude))
+        let url = URL(string: Constants.getUrlFromLocation(latitude: latitude, longitude: longitude, page: page))
         
         let session = URLSession.shared
         let request = URLRequest(url: url!)
@@ -56,36 +56,32 @@ class FlickrNetworkSearch {
                 return
             }
             
-            print("Printing data")
-            
-            for entry in parsedJSONData {
-                print(entry)
+            /* GUARD: Are the "photos" and "photo" keys in our result? */
+            guard let photosDictionary = parsedJSONData[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
+                displayError("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' and '\(Constants.FlickrResponseKeys.Photo)' in \(parsedJSONData)")
+                return
             }
             
-//            /* GUARD: Are the "photos" and "photo" keys in our result? */
-//            guard let photosDictionary = parsedJSONData[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
-//                displayError("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' and '\(Constants.FlickrResponseKeys.Photo)' in \(parsedJSONData)")
-//                return
-//            }
+            // Pick a random index and create the dictionary for this item
+            if photoArray.count == 0 {
+                displayError("No photos found.")
+                return
+            }
             
-//            // Pick a random index and create the dictionary for this item
-//            if photoArray.count == 0 {
-//                displayError("No photos found.")
-//                return
-//            }
-//            
-//            // grab number of pages to use to generate random number
-//            guard let numPages: Int = photosDictionary[Constants.FlickrResponseKeys.Pages] as? Int else {
-//                displayError("Could not get number of pages")
-//                return
-//            }
-
+            if page == nil {
+                // grab number of pages to use to generate random number
+                guard let numPages: Int = photosDictionary[Constants.FlickrResponseKeys.Pages] as? Int else {
+                    displayError("Could not get number of pages")
+                    return
+                }
+                
+                let randomPageNumber = Int(arc4random_uniform(UInt32(numPages)))
+                findFlickrImagesAtLocation(latitude: latitude, longitude: longitude, page: randomPageNumber)
+            }
             
             
             
             
-//            let randomPageNumber = Int(arc4random_uniform(UInt32(numPages)))
-//            print(randomPageNumber)
             
         }
         

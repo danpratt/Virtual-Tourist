@@ -17,6 +17,7 @@ struct Constants {
         static let KMRadius = "15" // Setting for how big a radius of circle around given coordinates to show images from
         static let Format = "json"
         static let DisableJSONCallback = "1" /* 1 means "yes" */
+        static let PerPage = "24"
     }
     
     // MARK: - Argument Keys
@@ -29,6 +30,8 @@ struct Constants {
         static let KMRadius = "&radius="
         static let Format = "&format="
         static let NoJSONCallback = "&nojsoncallback="
+        static let PerPage = "&per_page="
+        static let Page = "&page="
     }
     
     // MARK: - Method URLs
@@ -48,13 +51,16 @@ struct Constants {
         static let Total = "total"
     }
     
-    static func getUrlFromLocation(latitude: Double, longitude: Double) -> String {
-        
-        print(latitude)
-        print(longitude)
+    static func getUrlFromLocation(latitude: Double, longitude: Double, page: Int?) -> String {
         
         let url = MethodUrls.FlickrURL + ArgumentKeys.Method + MethodUrls.SearchMethod
-        let parameters = ArgumentKeys.APIKey + Arguments.APIKey + ArgumentKeys.SafeSearch + Arguments.SafeSearch + ArgumentKeys.Format + Arguments.Format + ArgumentKeys.NoJSONCallback + Arguments.DisableJSONCallback
+        var parameters = ArgumentKeys.APIKey + Arguments.APIKey + ArgumentKeys.SafeSearch + Arguments.SafeSearch + ArgumentKeys.Format + Arguments.Format + ArgumentKeys.NoJSONCallback + Arguments.DisableJSONCallback + ArgumentKeys.PerPage + Arguments.PerPage
+        
+        // If we have a specific page number, add that to the URL
+        if let page = page {
+            parameters += ArgumentKeys.Page + String(page)
+        }
+        
         let coordinateParams = ArgumentKeys.Latitude + String(latitude) + ArgumentKeys.Longitude + String(longitude) + ArgumentKeys.KMRadius + Arguments.KMRadius
         
         return url+parameters+coordinateParams
