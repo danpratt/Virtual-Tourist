@@ -186,6 +186,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     // When an annoation is being dragged, find the Pin data that coorisponds to the annotation
     // After the annotation's coordinates have been changes, change the lat/long of the Pin data as well
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
+        print(newState)
         if newState.hashValue != 0 {
             for (index, pin) in pinData.enumerated() {
                 if view.annotation?.coordinate.latitude == pin.latitude && view.annotation?.coordinate.longitude == pin.longitude && oldState.hashValue == 0 {
@@ -193,6 +194,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
                 }
             }
         } else {
+            dragging = true
             if pinIndexToUpdate != -1 {
                 guard let coordinate = view.annotation?.coordinate else {
                     print("Error getting new coordinate")
@@ -203,15 +205,23 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
                 // Set pinIndexToUpdate back to -1 so we don't have any accidents later on
                 pinIndexToUpdate = -1
                 // save to CoreData
+                pinMapView.reloadInputViews()
                 delegate.stack.save()
             }
         }
     }
     
-    // MARK: - Segue Functios
+    // MARK: - Segue Functions
     
     // Map Delegate Method to call segue when user taps on pin
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        // We don't want to load the view if we were just dragging
+        if dragging {
+            dragging = false
+            mapView.deselectAnnotation(view.annotation, animated: true)
+            return
+        }
+        
         guard let coordinate = view.annotation?.coordinate else {
             print("Unable to get coordinate for segue")
             return
