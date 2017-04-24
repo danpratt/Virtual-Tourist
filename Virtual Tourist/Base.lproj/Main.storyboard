@@ -150,11 +150,54 @@
                         <outlet property="flickrPhotosCollectionView" destination="lrK-96-Iof" id="6Bw-SJ-Anh"/>
                         <outlet property="flickrPhotosFlowLayout" destination="r7A-8S-gV1" id="7R7-nl-uaZ"/>
                         <outlet property="locationMap" destination="oXa-wK-sHy" id="2Ck-kz-Ofl"/>
+                        <segue destination="afd-L5-h7f" kind="show" identifier="PhotoDetailSegue" id="X9x-Hm-8HG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iA5-3h-gcb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1428" y="204.64767616191907"/>
+        </scene>
+        <!--Photo Detail View Controller-->
+        <scene sceneID="bey-Gh-c4b">
+            <objects>
+                <viewController storyboardIdentifier="Photo Detail" id="afd-L5-h7f" customClass="VTPhotoDetailViewController" customModule="Virtual_Tourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zX0-CK-eep"/>
+                        <viewControllerLayoutGuide type="bottom" id="uiz-N6-QvQ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Nvc-mF-l8B">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dQD-uR-r0t">
+                                <rect key="frame" x="16" y="64" width="343" height="545"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="hYY-pn-qcg">
+                                <rect key="frame" x="16" y="617" width="343" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="hYY-pn-qcg" firstAttribute="top" secondItem="dQD-uR-r0t" secondAttribute="bottom" constant="8" id="2a7-FN-Npy"/>
+                            <constraint firstItem="dQD-uR-r0t" firstAttribute="trailing" secondItem="Nvc-mF-l8B" secondAttribute="trailingMargin" id="Bxs-FG-Luq"/>
+                            <constraint firstItem="hYY-pn-qcg" firstAttribute="leading" secondItem="dQD-uR-r0t" secondAttribute="leading" id="COm-kv-Po2"/>
+                            <constraint firstItem="dQD-uR-r0t" firstAttribute="leading" secondItem="Nvc-mF-l8B" secondAttribute="leadingMargin" id="XVV-kg-paq"/>
+                            <constraint firstItem="uiz-N6-QvQ" firstAttribute="top" secondItem="hYY-pn-qcg" secondAttribute="bottom" constant="20" id="iin-ZP-nHK"/>
+                            <constraint firstItem="dQD-uR-r0t" firstAttribute="top" secondItem="zX0-CK-eep" secondAttribute="bottom" id="r9B-wR-w9d"/>
+                            <constraint firstItem="hYY-pn-qcg" firstAttribute="trailing" secondItem="dQD-uR-r0t" secondAttribute="trailing" id="tAO-lZ-ndG"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="flickrPhoto" destination="dQD-uR-r0t" id="4Ie-Nm-fgO"/>
+                        <outlet property="photoTitle" destination="hYY-pn-qcg" id="j1H-FD-IMp"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="m5y-1k-EaW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2173.5999999999999" y="202.84857571214394"/>
         </scene>
     </scenes>
 </document>

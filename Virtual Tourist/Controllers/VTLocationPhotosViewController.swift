@@ -68,17 +68,48 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         // Configure the cell
         if let imageData = photoInfo?.rawImageData {
             cell.activity.stopAnimating()
+            cell.hasImageLoaded = true
             cell.flickrImage.image = UIImage(data: imageData as Data)
         } else {
             downloadImage(urlString: (photoInfo?.imageURLString!)!, completionHandler: { (image, data) in
                 cell.activity.stopAnimating()
                 cell.flickrImage.image = image
+                cell.hasImageLoaded = true
                 photoInfo?.rawImageData = data
                 self.delegate.stack.save()
             })
         }
     
         return cell
+    }
+    
+    // MARK: - Functions used for segue
+    
+    // Called when an item gets tapped
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        // Make sure that the image has finished loading, otherwise we don't want to try the segue yet
+        if (collectionView.cellForItem(at: indexPath) as! FlickrPhotoCollectionViewCell).hasImageLoaded {
+            guard let photo = photos?[indexPath.row] else {
+                print("unable to get photo data for segue")
+                return
+            }
+            
+            performSegue(withIdentifier: "PhotoDetailSegue", sender: photo)
+        }
+
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "PhotoDetailSegue" {
+            
+            let photo = sender as! Photo
+            
+            let flickrPhotoDetailView = segue.destination as! VTPhotoDetailViewController
+            flickrPhotoDetailView.photo = UIImage(data: photo.rawImageData! as Data)
+            flickrPhotoDetailView.titleString = photo.title
+            
+        }
     }
     
     // Handle downloading image
