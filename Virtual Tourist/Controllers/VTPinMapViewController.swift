@@ -18,8 +18,11 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     var albumAnnotations = [MKPointAnnotation]()
     var pinData: [Pin] = []
     var savedStateData: [SaveState] = []
+    
+    // Booleans
     var firstLoad = true
     var dragging = false
+    var editButtonEnabled = false
     
     // Delegate
     let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -35,9 +38,16 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     // MARK: - IBOutlets
     @IBOutlet var longPressRecognizer: UILongPressGestureRecognizer!
     @IBOutlet weak var pinMapView: MKMapView!
+    @IBOutlet weak var editButton: UIBarButtonItem!
+    @IBOutlet weak var tapToDeleteFlag: UILabel!  // gets displayed when in edit mode to warn user
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Setup map
+        pinMapView.showsBuildings = true
+        pinMapView.showsPointsOfInterest = true
+        pinMapView.showsUserLocation = true
 
         // Setup long press recognizer
         setupLongPress()
@@ -51,6 +61,20 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     
 
     // MARK: - IBActions
+    
+    // called when edit button is pressed
+    @IBAction func editButtonPressed(_ sender: Any) {
+        if editButtonEnabled {
+            editButtonEnabled = false
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonPressed))
+            tapToDeleteFlag.isHidden = true
+        } else {
+            editButtonEnabled = true
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(editButtonPressed))
+            tapToDeleteFlag.isHidden = false
+        }
+        
+    }
     
     @IBAction func longPressActionDetected(_ sender: AnyObject) {
         
@@ -93,6 +117,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     
     // Sets the map up from where the user left off
     private func setupMapRegion() {
+        
         let fetchedSaveStateController = getFetchControllerFor(entityNamed: SaveStateKey, inContext: delegate.stack.context)
         try? fetchedSaveStateController.performFetch()
         savedStateData = fetchedSaveStateController.fetchedObjects as! [SaveState]
@@ -224,18 +249,33 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         
         // Check with the longPressRecognizer to make sure that touches are over
         if longPressRecognizer.state.hashValue == 0 {
+            mapView.deselectAnnotation(view.annotation, animated: true)
             // We don't want to load the view if we were just dragging
             if dragging {
                 dragging = false
-                mapView.deselectAnnotation(view.annotation, animated: true)
                 return
             }
             
+            // Going to need the coordinate no matter what now, so get that first
             guard let coordinate = view.annotation?.coordinate else {
                 print("Unable to get coordinate for segue")
                 return
             }
-            performSegue(withIdentifier: "AlbumSegue", sender: coordinate)
+            
+            // check to see if we were editing, if so we will be in delete mode
+            // otherwise we will load the album view
+            if editButtonEnabled {
+                // first remove the annotation from the view
+                mapView.removeAnnotation(view.annotation!)
+                // get the index we are going to delete
+                let pinIndexToDelete = findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)
+                // remove the object from CoreData
+                delegate.stack.context.delete(pinData[pinIndexToDelete])
+                delegate.stack.save()
+            } else {
+                performSegue(withIdentifier: "AlbumSegue", sender: coordinate)
+            }
+            
         }
         
         

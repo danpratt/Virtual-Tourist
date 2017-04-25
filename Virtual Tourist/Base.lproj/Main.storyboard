@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F60a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4MS-Oj-NVB">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F67a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4MS-Oj-NVB">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -38,28 +38,47 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="z58-La-wiG">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsCompass="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z58-La-wiG">
                                 <rect key="frame" x="0.0" y="64" width="375" height="609"/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="CVe-Og-W3P" appends="YES" id="Z1F-B2-jUW"/>
                                 </connections>
                             </mapView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.75" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Pins to Delete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8m9-2P-yQd">
+                                <rect key="frame" x="0.0" y="611" width="375" height="56"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="56" id="lnr-vC-XE8"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="z58-La-wiG" firstAttribute="leading" secondItem="0CN-gD-CWl" secondAttribute="leadingMargin" constant="-16" id="7Mc-Rh-mid"/>
+                            <constraint firstItem="8m9-2P-yQd" firstAttribute="leading" secondItem="0CN-gD-CWl" secondAttribute="leadingMargin" constant="-16" id="KiY-WR-6NG"/>
+                            <constraint firstItem="U0w-Be-DMI" firstAttribute="top" secondItem="8m9-2P-yQd" secondAttribute="bottom" id="ROk-9F-y4w"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="8m9-2P-yQd" secondAttribute="trailing" constant="-16" id="cAw-Rt-8Ob"/>
                             <constraint firstAttribute="trailingMargin" secondItem="z58-La-wiG" secondAttribute="trailing" constant="-16" id="nQ2-GE-ZCk"/>
                             <constraint firstItem="z58-La-wiG" firstAttribute="top" secondItem="X0v-jz-FSy" secondAttribute="bottom" id="oHv-EU-wev"/>
                             <constraint firstItem="U0w-Be-DMI" firstAttribute="top" secondItem="z58-La-wiG" secondAttribute="bottom" constant="-6" id="of6-bP-kML"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="hil-hd-XY1">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="zfd-r8-cZH"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="zfd-r8-cZH">
+                            <connections>
+                                <action selector="editButtonPressed:" destination="V5k-xB-aUt" id="Ej1-3a-4BQ"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="editButton" destination="zfd-r8-cZH" id="uQZ-3g-SM5"/>
                         <outlet property="longPressRecognizer" destination="CVe-Og-W3P" id="9fu-SJ-Zla"/>
                         <outlet property="pinMapView" destination="z58-La-wiG" id="B2R-KM-4Ie"/>
+                        <outlet property="tapToDeleteFlag" destination="8m9-2P-yQd" id="zTM-lm-74V"/>
                         <segue destination="grP-1C-y1G" kind="show" identifier="AlbumSegue" id="a5E-lo-kYE"/>
                     </connections>
                 </viewController>

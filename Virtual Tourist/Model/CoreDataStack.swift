@@ -142,7 +142,8 @@ extension CoreDataStack {
                     do {
                         try self.persistingContext.save()
                     } catch {
-                        fatalError("Error while saving persisting context: \(error)")
+                        print("Fatal error while saving, will try again later")
+                        //fatalError("Error while saving persisting context: \(error)")
                     }
                 }
             }
