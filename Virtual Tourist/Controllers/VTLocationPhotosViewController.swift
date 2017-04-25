@@ -91,7 +91,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         
         photos?.removeAll()
         
-        FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, page: nil, pin: pin!, completion: { (success) in
+        FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, pin: pin!, completion: { (success) in
             DispatchQueue.main.async {
                 self.reloadActivity.stopAnimating()
                 self.delegate.stack.save()
@@ -128,13 +128,11 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         // Configure the cell
         if let imageData = photoInfo?.rawImageData {
             cell.activity.stopAnimating()
-            cell.hasImageLoaded = true
             cell.flickrImage.image = UIImage(data: imageData as Data)
         } else {
             downloadImage(urlString: (photoInfo?.imageURLString!)!, completionHandler: { (image, data) in
                 cell.activity.stopAnimating()
                 cell.flickrImage.image = image
-                cell.hasImageLoaded = true
                 photoInfo?.rawImageData = data
                 self.delegate.stack.save()
             })
@@ -149,10 +147,15 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if deleteModeOn {
-            
+            delegate.stack.context.delete((photos?[indexPath.row])!)
+            photos?.remove(at: indexPath.row)
+            self.delegate.stack.save()
+            DispatchQueue.main.async {
+                self.flickrPhotosCollectionView.reloadData()
+            }
         } else {
             // Make sure that the image has finished loading, otherwise we don't want to try the segue yet
-            if (collectionView.cellForItem(at: indexPath) as! FlickrPhotoCollectionViewCell).hasImageLoaded {
+            if !(collectionView.cellForItem(at: indexPath) as! FlickrPhotoCollectionViewCell).activity.isAnimating {
                 guard let photo = photos?[indexPath.row] else {
                     print("unable to get photo data for segue")
                     return

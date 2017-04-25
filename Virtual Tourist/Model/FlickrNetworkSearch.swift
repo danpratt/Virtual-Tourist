@@ -13,7 +13,7 @@ import CoreData
 class FlickrNetworkSearch {
     
     // Gets images from Flickr near a lat/long coordinate
-    static func findFlickrImagesAtLocation(latitude: Double, longitude: Double, page: Int?, pin: Pin, completion: @escaping(_ success: Bool) -> Void) {
+    static func findFlickrImagesAtLocation(latitude: Double, longitude: Double, page: Int? = nil, pin: Pin, completion: @escaping(_ success: Bool) -> Void) {
         
         // Build a URL
         let url = URL(string: Constants.getUrlFromLocation(latitude: latitude, longitude: longitude, page: page))
@@ -92,6 +92,8 @@ class FlickrNetworkSearch {
                     }
                     (UIApplication.shared.delegate as! AppDelegate).stack.save()
                     completion(true)
+                    
+                    
             }
         }
         task.resume()

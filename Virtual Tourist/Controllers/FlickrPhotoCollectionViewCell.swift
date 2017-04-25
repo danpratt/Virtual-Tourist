@@ -10,9 +10,6 @@ import UIKit
 
 class FlickrPhotoCollectionViewCell: UICollectionViewCell {
     
-    // MARK: - Variables
-    var hasImageLoaded = false
-    
     // MARK: - IBOutlets
     @IBOutlet weak var activity: UIActivityIndicatorView!
     @IBOutlet weak var flickrImage: UIImageView!
