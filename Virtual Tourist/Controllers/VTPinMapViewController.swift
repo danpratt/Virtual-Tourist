@@ -47,7 +47,6 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         // Setup map
         pinMapView.showsBuildings = true
         pinMapView.showsPointsOfInterest = true
-        pinMapView.showsUserLocation = true
 
         // Setup long press recognizer
         setupLongPress()
@@ -89,7 +88,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             // Store and save to CoreData
             pinData.append(Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: delegate.stack.context))
             
-            FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, page: nil, pin: pinData[findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)])
+            FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, page: nil, pin: pinData[findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)], completion: { (success) in })
             
             delegate.stack.save()
         }
@@ -232,7 +231,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
                 
                 // Delete the old photos and load up new ones at the new coordinates
                 pinData[pinIndexToUpdate].album = nil
-                FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, page: nil, pin: pinData[pinIndexToUpdate])
+                FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, page: nil, pin: pinData[pinIndexToUpdate], completion: { (success) in })
                 
                 // Set pinIndexToUpdate back to -1 so we don't have any accidents later on
                 pinIndexToUpdate = -1

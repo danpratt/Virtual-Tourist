@@ -46,10 +46,10 @@
                                 </connections>
                             </mapView>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.75" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Pins to Delete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8m9-2P-yQd">
-                                <rect key="frame" x="0.0" y="611" width="375" height="56"/>
+                                <rect key="frame" x="0.0" y="612" width="375" height="55"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="56" id="lnr-vC-XE8"/>
+                                    <constraint firstAttribute="height" constant="55" id="lnr-vC-XE8"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -152,23 +152,56 @@
                                     <outlet property="prefetchDataSource" destination="grP-1C-y1G" id="tuu-mo-i0s"/>
                                 </connections>
                             </collectionView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="yna-7a-vMj">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="color" red="0.24794097239999999" green="0.34399595859999998" blue="0.66284722090000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </activityIndicatorView>
+                            <button hidden="YES" opaque="NO" alpha="0.75" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jrw-e3-Sz0">
+                                <rect key="frame" x="0.0" y="612" width="375" height="55"/>
+                                <color key="backgroundColor" red="0.24794097244739532" green="0.34399595856666565" blue="0.66284722089767456" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="Ngk-St-JgG"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Reload New Photos">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="reloadNewPhotosButtonPressed:" destination="grP-1C-y1G" eventType="touchUpInside" id="DMk-aD-2s5"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Jrw-e3-Sz0" firstAttribute="leading" secondItem="Ohy-1r-6YH" secondAttribute="leadingMargin" constant="-16" id="5kP-ZG-iMh"/>
                             <constraint firstItem="lrK-96-Iof" firstAttribute="top" secondItem="oXa-wK-sHy" secondAttribute="bottom" constant="-2" id="8cp-LJ-Z1Z"/>
                             <constraint firstAttribute="trailing" secondItem="oXa-wK-sHy" secondAttribute="trailing" id="ILL-Ln-Dle"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Jrw-e3-Sz0" secondAttribute="trailing" constant="-16" id="PPX-R0-7CD"/>
+                            <constraint firstItem="yna-7a-vMj" firstAttribute="centerX" secondItem="Ohy-1r-6YH" secondAttribute="centerX" id="QVj-6c-K1n"/>
                             <constraint firstItem="lrK-96-Iof" firstAttribute="leading" secondItem="Ohy-1r-6YH" secondAttribute="leadingMargin" constant="-16" id="RhV-m0-S2G"/>
+                            <constraint firstItem="yna-7a-vMj" firstAttribute="centerY" secondItem="Ohy-1r-6YH" secondAttribute="centerY" id="VVf-3z-RZ3"/>
                             <constraint firstItem="oXa-wK-sHy" firstAttribute="top" secondItem="GeF-If-FHw" secondAttribute="bottom" id="Z0s-3T-OIB"/>
                             <constraint firstItem="lrK-96-Iof" firstAttribute="top" secondItem="GeF-If-FHw" secondAttribute="bottom" constant="178" id="Z66-dK-UgV"/>
+                            <constraint firstItem="Tf2-Xq-Ohi" firstAttribute="top" secondItem="Jrw-e3-Sz0" secondAttribute="bottom" id="gqB-zZ-54m"/>
                             <constraint firstAttribute="trailingMargin" secondItem="lrK-96-Iof" secondAttribute="trailing" constant="-16" id="isN-iR-RTe"/>
                             <constraint firstItem="lrK-96-Iof" firstAttribute="bottom" secondItem="Tf2-Xq-Ohi" secondAttribute="top" id="laZ-2d-QrU"/>
                             <constraint firstItem="oXa-wK-sHy" firstAttribute="leading" secondItem="Ohy-1r-6YH" secondAttribute="leading" id="p6v-Mm-Ccb"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="6bV-Jy-wQP">
+                        <barButtonItem key="rightBarButtonItem" title="Delete Photos" id="8Ki-8G-KO6">
+                            <connections>
+                                <action selector="deleteButtonPressed:" destination="grP-1C-y1G" id="7Ho-3f-VaR"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="deletePhotosButton" destination="8Ki-8G-KO6" id="Der-Do-C3X"/>
                         <outlet property="flickrPhotosCollectionView" destination="lrK-96-Iof" id="6Bw-SJ-Anh"/>
                         <outlet property="flickrPhotosFlowLayout" destination="r7A-8S-gV1" id="7R7-nl-uaZ"/>
                         <outlet property="locationMap" destination="oXa-wK-sHy" id="2Ck-kz-Ofl"/>
+                        <outlet property="reloadActivity" destination="yna-7a-vMj" id="N6e-sG-Qzy"/>
+                        <outlet property="reloadButton" destination="Jrw-e3-Sz0" id="qxG-1s-R7g"/>
                         <segue destination="afd-L5-h7f" kind="show" identifier="PhotoDetailSegue" id="X9x-Hm-8HG"/>
                     </connections>
                 </viewController>

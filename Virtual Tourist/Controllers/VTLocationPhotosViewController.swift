@@ -18,6 +18,9 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     var pin: Pin?
     var photos: [Photo]?
     
+    // Booleans
+    var deleteModeOn = false
+    
     // Delegate
     let delegate = UIApplication.shared.delegate as! AppDelegate
     
@@ -25,6 +28,9 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     @IBOutlet weak var flickrPhotosCollectionView: UICollectionView!
     @IBOutlet weak var flickrPhotosFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var locationMap: MKMapView!
+    @IBOutlet weak var deletePhotosButton: UIBarButtonItem!
+    @IBOutlet weak var reloadButton: UIButton!
+    @IBOutlet weak var reloadActivity: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +56,54 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         self.reloadInputViews()
 
     }
+    
+    // MARK: - IBActions
+    
+    // Called when nav button gets tapped
+    // Makes UI changes and sets boolean flag
+    @IBAction func deleteButtonPressed(_ sender: Any) {
+        if deleteModeOn {
+            deletePhotosButton.title = "Delete Photos"
+            deletePhotosButton.style = .plain
+            deleteModeOn = false
+            reloadButton.isHidden = true
+            reloadButton.isEnabled = false
+        } else {
+            deletePhotosButton.title = "Done"
+            deletePhotosButton.style = .done
+            deleteModeOn = true
+            reloadButton.isHidden = false
+            reloadButton.isEnabled = true
+        }
+        
+    }
+
+    // Can only be called while in edit mode
+    // removes all the old photos and loads new ones
+    @IBAction func reloadNewPhotosButtonPressed(_ sender: Any) {
+        // Get rid of the reload button and display edit button instead of done again
+        deleteButtonPressed(self)
+        reloadActivity.startAnimating()
+        
+        for picture in (pin?.album)! {
+            delegate.stack.context.delete(picture as! NSManagedObject)
+        }
+        
+        photos?.removeAll()
+        
+        FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, page: nil, pin: pin!, completion: { (success) in
+            DispatchQueue.main.async {
+                self.reloadActivity.stopAnimating()
+                self.delegate.stack.save()
+                self.photos = self.pin?.album?.allObjects as? [Photo]
+                self.flickrPhotosCollectionView.reloadData()
+            }
+        })
+        
+        
+        
+
+    }
 
     // MARK: - Collection View Methods
 
@@ -60,6 +114,12 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FlickrPhotoCollectionViewCell
         let photoInfo = photos?[indexPath.row]
+        
+        // Check to see if the image is gone (i.e. are we reloading?)
+        if photoInfo?.rawImageData == nil {
+            cell.flickrImage.image = nil
+            cell.activity.startAnimating()
+        }
         
         if cell.flickrImage.image == nil && !cell.activity.isAnimating {
             cell.activity.startAnimating()
@@ -88,14 +148,18 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     // Called when an item gets tapped
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        // Make sure that the image has finished loading, otherwise we don't want to try the segue yet
-        if (collectionView.cellForItem(at: indexPath) as! FlickrPhotoCollectionViewCell).hasImageLoaded {
-            guard let photo = photos?[indexPath.row] else {
-                print("unable to get photo data for segue")
-                return
-            }
+        if deleteModeOn {
             
-            performSegue(withIdentifier: "PhotoDetailSegue", sender: photo)
+        } else {
+            // Make sure that the image has finished loading, otherwise we don't want to try the segue yet
+            if (collectionView.cellForItem(at: indexPath) as! FlickrPhotoCollectionViewCell).hasImageLoaded {
+                guard let photo = photos?[indexPath.row] else {
+                    print("unable to get photo data for segue")
+                    return
+                }
+                
+                performSegue(withIdentifier: "PhotoDetailSegue", sender: photo)
+            }
         }
 
     }
@@ -161,37 +225,4 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     func didRotate(_: Any) {
         setupFlowLayout(view.frame.size)
     }
-
-
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
-    }
-    */
-
 }
