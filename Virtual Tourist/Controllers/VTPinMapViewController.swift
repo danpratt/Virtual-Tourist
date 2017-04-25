@@ -169,8 +169,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         if albumAnnotationsView == nil {
             albumAnnotationsView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             albumAnnotationsView?.isDraggable = true
-            albumAnnotationsView?.animatesDrop = true
-            
+            albumAnnotationsView?.animatesDrop = true            
         } else {
             albumAnnotationsView!.annotation = annotation
         }

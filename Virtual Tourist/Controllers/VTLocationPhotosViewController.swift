@@ -45,6 +45,13 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
             // Load the photos
             photos = pin?.album?.allObjects as? [Photo]
             
+            if photos?.count == 0 {
+                deletePhotosButton.isEnabled = false
+                reloadButton.isEnabled = false
+                reloadButton.isHidden = false
+                reloadButton.setTitle("No Photos Found", for: UIControlState.disabled)
+            }
+            
             // get the flow layout applied
             didRotate(self)
             
