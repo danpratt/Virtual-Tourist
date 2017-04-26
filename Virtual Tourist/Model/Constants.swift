@@ -60,7 +60,7 @@ struct Constants {
     static func getUrlFromLocation(latitude: Double, longitude: Double, page: Int?) -> String {
         
         let url = MethodUrls.FlickrURL + ArgumentKeys.Method + MethodUrls.SearchMethod
-        var parameters = ArgumentKeys.APIKey + Arguments.APIKey + ArgumentKeys.SafeSearch + Arguments.SafeSearch + ArgumentKeys.Format + Arguments.Format + ArgumentKeys.NoJSONCallback + Arguments.DisableJSONCallback + ArgumentKeys.PerPage + Arguments.PerPage
+        var parameters = ArgumentKeys.APIKey + Arguments.APIKey + ArgumentKeys.SafeSearch + Arguments.SafeSearch + ArgumentKeys.Format + Arguments.Format + ArgumentKeys.NoJSONCallback + Arguments.DisableJSONCallback
         
         // If we have a specific page number, add that to the URL
         if let page = page {

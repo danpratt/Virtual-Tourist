@@ -81,14 +81,21 @@ class FlickrNetworkSearch {
                 })
             } else // We have found our random page load up the photo data
                 {
-                    for photo in photoArray {
-                        let farm = photo[Constants.FlickrResponseKeys.Farm] as! Int
-                        let id = photo[Constants.FlickrResponseKeys.Id] as! String
-                        let server = photo[Constants.FlickrResponseKeys.Server] as! String
-                        let secret = photo[Constants.FlickrResponseKeys.Secret] as! String
-                        let title = photo[Constants.FlickrResponseKeys.Title] as! String
-                        
-                        let _ = Photo(serverID: server, farm: farm, id: id, secret: secret, title: title, pin: pin, context: (UIApplication.shared.delegate as! AppDelegate).stack.context)
+                    DispatchQueue.main.async {
+                        for (index, photo) in photoArray.enumerated() {
+                            // Make sure that we don't get more than 30 photos
+                            if index < 30 {
+                                let farm = photo[Constants.FlickrResponseKeys.Farm] as! Int
+                                let id = photo[Constants.FlickrResponseKeys.Id] as! String
+                                let server = photo[Constants.FlickrResponseKeys.Server] as! String
+                                let secret = photo[Constants.FlickrResponseKeys.Secret] as! String
+                                let title = photo[Constants.FlickrResponseKeys.Title] as! String
+                                
+                                let _ = Photo(serverID: server, farm: farm, id: id, secret: secret, title: title, pin: pin, context: (UIApplication.shared.delegate as! AppDelegate).stack.context)
+                            } else {
+                                break
+                            }
+                        }
                     }
                     (UIApplication.shared.delegate as! AppDelegate).stack.save()
                     completion(true)
