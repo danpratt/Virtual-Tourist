@@ -81,7 +81,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
             
         }
         
-        self.reloadInputViews()
+        reloadInputViews()
 
     }
     
