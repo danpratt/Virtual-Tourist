@@ -88,9 +88,12 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             // Store and save to CoreData
             pinData.append(Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: delegate.stack.context))
             
-            FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, pin: pinData[findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)], completion: { (success) in
+            FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, pin: pinData[findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)], completion: { (success, noPhotos) in
                 if success {
                     self.delegate.stack.save()
+                } else if noPhotos {
+                    self.deletePin(annotation: annotation, on: self.pinMapView)
+                    self.presentNoPhotosAlert()
                 } else {
                     self.presentNetworkAlert()
                 }
@@ -101,7 +104,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     }
     
     // MARK: - Private Helper Methods
-    func findPinIndexat(latitude: Double, longitude: Double) -> Int {
+    private func findPinIndexat(latitude: Double, longitude: Double) -> Int {
         for (index, pin) in pinData.enumerated() {
             if latitude == pin.latitude && longitude == pin.longitude {
                 return index
@@ -110,14 +113,17 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
         return -1
     }
     
-    // Present an alert to let user know there was an error
-    
-    private func presentNetworkAlert() {
+    // Handle delete
+    private func deletePin(annotation: MKAnnotation, on mapView: MKMapView) {
+        // first remove the annotation from the view
         DispatchQueue.main.async {
-            let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
-            alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            mapView.removeAnnotation(annotation)
         }
+        // get the index we are going to delete
+        let pinIndexToDelete = findPinIndexat(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)
+        // remove the object from CoreData
+        delegate.stack.context.delete(pinData[pinIndexToDelete])
+        delegate.stack.save()
     }
     
     // MARK: - Private Setup Methods
@@ -246,12 +252,15 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
                 
                 pinData[pinIndexToUpdate].album = nil
                 
-                FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, pin: pinData[pinIndexToUpdate], completion: { (success) in
+                FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, pin: pinData[pinIndexToUpdate], completion: { (success, noPhotos) in
                     if success {
                         // Set pinIndexToUpdate back to -1 so we don't have any accidents later on
                         self.pinIndexToUpdate = -1
                         // save to CoreData
                         self.delegate.stack.save()
+                    } else if noPhotos {
+                        self.presentNoPhotosAlert()
+                        self.deletePin(annotation: view.annotation!, on: mapView)
                     } else {
                         self.presentNetworkAlert()
                     }
@@ -285,13 +294,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             // check to see if we were editing, if so we will be in delete mode
             // otherwise we will load the album view
             if editButtonEnabled {
-                // first remove the annotation from the view
-                mapView.removeAnnotation(view.annotation!)
-                // get the index we are going to delete
-                let pinIndexToDelete = findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)
-                // remove the object from CoreData
-                delegate.stack.context.delete(pinData[pinIndexToDelete])
-                delegate.stack.save()
+                deletePin(annotation: view.annotation!, on: mapView)
             } else {
                 performSegue(withIdentifier: "AlbumSegue", sender: coordinate)
             }

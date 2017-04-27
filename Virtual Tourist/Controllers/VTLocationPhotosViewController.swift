@@ -121,7 +121,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         photos?.removeAll()
         delegate.stack.save()
         
-        FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, pin: pin!, completion: { (success) in
+        FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, pin: pin!, completion: { (success, noPhotos) in
             if success {
                 DispatchQueue.main.async {
                     self.deletePhotosButton.isEnabled = true
@@ -130,13 +130,16 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
                     self.photos = self.pin?.album?.allObjects as? [Photo]
                     self.flickrPhotosCollectionView.reloadData()
                 }
-            } else {
+            } else if !noPhotos {
                 DispatchQueue.main.async {
                     self.reloadActivity.stopAnimating()
                     self.deletePhotosButton.isEnabled = true
-                    let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
+                    self.presentNetworkAlert()
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.reloadActivity.stopAnimating()
+                    self.presentNoPhotosAlert()
                 }
             }
 

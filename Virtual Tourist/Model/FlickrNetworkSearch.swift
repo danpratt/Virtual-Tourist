@@ -13,7 +13,7 @@ import CoreData
 class FlickrNetworkSearch {
     
     // Gets images from Flickr near a lat/long coordinate
-    static func findFlickrImagesAtLocation(latitude: Double, longitude: Double, page: Int? = nil, pin: Pin, completion: @escaping(_ success: Bool) -> Void) {
+    static func findFlickrImagesAtLocation(latitude: Double, longitude: Double, page: Int? = nil, pin: Pin, completion: @escaping(_ success: Bool, _ noPhotos: Bool) -> Void) {
         
         // Build a URL
         let url = URL(string: Constants.getUrlFromLocation(latitude: latitude, longitude: longitude, page: page))
@@ -21,13 +21,15 @@ class FlickrNetworkSearch {
         let session = URLSession.shared
         let request = URLRequest(url: url!)
         
+        var noPhotos = false
+        
         let task = session.dataTask(with: request) { (data, response, error) in
             
             // if an error occurs, print it
             func displayError(_ error: String) {
                 print(error)
                 print("URLRequest at time of error: \(request)")
-                completion(false)
+                completion(false, noPhotos)
             }
             
             /* GUARD: Was there an error? */
@@ -65,6 +67,7 @@ class FlickrNetworkSearch {
             
             // Pick a random index and create the dictionary for this item
             if photoArray.count == 0 {
+                noPhotos = true
                 displayError("No photos found.")
                 return
             }
@@ -88,8 +91,8 @@ class FlickrNetworkSearch {
                 // randomly pick a page
                 let randomPageNumber = Int(arc4random_uniform(UInt32(maxPage)))
 
-                let _ = findFlickrImagesAtLocation(latitude: latitude, longitude: longitude, page: randomPageNumber, pin: pin, completion: { (success) in
-                    completion(success)
+                let _ = findFlickrImagesAtLocation(latitude: latitude, longitude: longitude, page: randomPageNumber, pin: pin, completion: { (success, noPhotos) in
+                    completion(success, noPhotos)
                 })
             } else // We have found our random page load up the photo data
                 {
@@ -105,7 +108,7 @@ class FlickrNetworkSearch {
                         }
                     }
                     (UIApplication.shared.delegate as! AppDelegate).stack.save()
-                    completion(true)
+                    completion(true, false)
                     
                     
             }
