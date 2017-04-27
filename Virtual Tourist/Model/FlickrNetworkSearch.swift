@@ -27,6 +27,7 @@ class FlickrNetworkSearch {
             func displayError(_ error: String) {
                 print(error)
                 print("URLRequest at time of error: \(request)")
+                completion(false)
             }
             
             /* GUARD: Was there an error? */

@@ -45,19 +45,27 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
             // Load the photos
             photos = pin?.album?.allObjects as? [Photo]
             
+            // If the user has tapped on the pin too soon, Flickr may not have sent results back yet
+            // Check to see if there is anything, or if there is the expected 30 items
             if (photos?.count == nil) || (photos?.count)! < 30 {
                 
+                // If we don't see info from flickr yet, start activity indicator, and disable the delete button
                 reloadActivity.startAnimating()
+                self.deletePhotosButton.isEnabled = false
+                
+                // Wait five seconds, then check again
                 DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
                     self.reloadActivity.stopAnimating()
                     self.photos?.removeAll()
                     self.photos = self.pin?.album?.allObjects as? [Photo]
+                    // If we still don't see anything, then we need to let the user know
                     if self.photos?.count == 0 {
-                        self.deletePhotosButton.isEnabled = false
                         self.reloadButton.isEnabled = false
                         self.reloadButton.isHidden = false
                         self.reloadButton.setTitle("No Photos Found", for: UIControlState.disabled)
                     } else {
+                        // If we found something, re-enable the delete button and reload the data
+                        self.deletePhotosButton.isEnabled = true
                         self.flickrPhotosCollectionView.reloadData()
                     }
                 })
@@ -113,12 +121,19 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         delegate.stack.save()
         
         FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, pin: pin!, completion: { (success) in
-            DispatchQueue.main.async {
-                self.reloadActivity.stopAnimating()
-                self.delegate.stack.save()
-                self.photos = self.pin?.album?.allObjects as? [Photo]
-                self.flickrPhotosCollectionView.reloadData()
+            if success {
+                DispatchQueue.main.async {
+                    self.reloadActivity.stopAnimating()
+                    self.delegate.stack.save()
+                    self.photos = self.pin?.album?.allObjects as? [Photo]
+                    self.flickrPhotosCollectionView.reloadData()
+                }
+            } else {
+                let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
+                alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+                self.present(alert, animated: true, completion: nil)
             }
+
         })
     }
 

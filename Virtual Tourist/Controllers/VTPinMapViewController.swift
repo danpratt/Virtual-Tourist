@@ -89,8 +89,11 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             pinData.append(Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: delegate.stack.context))
             
             FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, pin: pinData[findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)], completion: { (success) in
-                
-                self.delegate.stack.save()
+                if success {
+                    self.delegate.stack.save()
+                } else {
+                    self.presentNetworkAlert()
+                }
             })
             
             
@@ -105,6 +108,14 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             }
         }
         return -1
+    }
+    
+    // Present an alert to let user know there was an error
+    
+    private func presentNetworkAlert() {
+        let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
+        alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Private Setup Methods
@@ -233,12 +244,18 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
                 
                 pinData[pinIndexToUpdate].album = nil
                 
-                FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, pin: pinData[pinIndexToUpdate], completion: { (success) in })
+                FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, pin: pinData[pinIndexToUpdate], completion: { (success) in
+                    if success {
+                        // Set pinIndexToUpdate back to -1 so we don't have any accidents later on
+                        self.pinIndexToUpdate = -1
+                        // save to CoreData
+                        self.delegate.stack.save()
+                    } else {
+                        self.presentNetworkAlert()
+                    }
+                })
                 
-                // Set pinIndexToUpdate back to -1 so we don't have any accidents later on
-                pinIndexToUpdate = -1
-                // save to CoreData
-                delegate.stack.save()
+                
             }
         }
     }
