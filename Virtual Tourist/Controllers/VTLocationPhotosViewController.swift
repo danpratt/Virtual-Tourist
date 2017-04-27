@@ -45,11 +45,24 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
             // Load the photos
             photos = pin?.album?.allObjects as? [Photo]
             
-            if photos?.count == 0 {
-                deletePhotosButton.isEnabled = false
-                reloadButton.isEnabled = false
-                reloadButton.isHidden = false
-                reloadButton.setTitle("No Photos Found", for: UIControlState.disabled)
+            if (photos?.count == nil) || (photos?.count)! < 30 {
+                
+                reloadActivity.startAnimating()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+                    self.reloadActivity.stopAnimating()
+                    self.photos?.removeAll()
+                    self.photos = self.pin?.album?.allObjects as? [Photo]
+                    if self.photos?.count == 0 {
+                        self.deletePhotosButton.isEnabled = false
+                        self.reloadButton.isEnabled = false
+                        self.reloadButton.isHidden = false
+                        self.reloadButton.setTitle("No Photos Found", for: UIControlState.disabled)
+                    } else {
+                        self.flickrPhotosCollectionView.reloadData()
+                    }
+                })
+                
+                
             }
             
             // get the flow layout applied
@@ -104,9 +117,6 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
                 self.reloadActivity.stopAnimating()
                 self.delegate.stack.save()
                 self.photos = self.pin?.album?.allObjects as? [Photo]
-                for photo in self.photos! {
-                    print("From inside reload: \(String(describing: photo.imageURLString))")
-                }
                 self.flickrPhotosCollectionView.reloadData()
             }
         })
