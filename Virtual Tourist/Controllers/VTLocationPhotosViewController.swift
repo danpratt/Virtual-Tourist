@@ -121,6 +121,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         delegate.stack.save()
         
         FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, pin: pin!, completion: { (success) in
+            // Either way we need to stop the animation
             if success {
                 DispatchQueue.main.async {
                     self.reloadActivity.stopAnimating()
@@ -129,9 +130,12 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
                     self.flickrPhotosCollectionView.reloadData()
                 }
             } else {
-                let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
-                alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-                self.present(alert, animated: true, completion: nil)
+                DispatchQueue.main.async {
+                    self.reloadActivity.stopAnimating()
+                    let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
 
         })
