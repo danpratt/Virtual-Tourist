@@ -75,26 +75,32 @@ class FlickrNetworkSearch {
                     return
                 }
                 
-                let randomPageNumber = Int(arc4random_uniform(UInt32(numPages)))
+                // If there are more than 4000 photos near area, the most flickr will return is 4000
+                // This means that with 30 per page, the highest page will be 133
+                var maxPage = 133
+                
+                // If there are fewer than 133 pages, then we will need to pick the smaller number
+                if numPages < maxPage {
+                    maxPage = numPages
+                }
+                
+                // randomly pick a page
+                let randomPageNumber = Int(arc4random_uniform(UInt32(maxPage)))
+
                 let _ = findFlickrImagesAtLocation(latitude: latitude, longitude: longitude, page: randomPageNumber, pin: pin, completion: { (success) in
                     completion(success)
                 })
             } else // We have found our random page load up the photo data
                 {
                     DispatchQueue.main.async {
-                        for (index, photo) in photoArray.enumerated() {
-                            // Make sure that we don't get more than 30 photos
-                            if index < 30 {
-                                let farm = photo[Constants.FlickrResponseKeys.Farm] as! Int
-                                let id = photo[Constants.FlickrResponseKeys.Id] as! String
-                                let server = photo[Constants.FlickrResponseKeys.Server] as! String
-                                let secret = photo[Constants.FlickrResponseKeys.Secret] as! String
-                                let title = photo[Constants.FlickrResponseKeys.Title] as! String
-                                
-                                let _ = Photo(serverID: server, farm: farm, id: id, secret: secret, title: title, pin: pin, context: (UIApplication.shared.delegate as! AppDelegate).stack.context)
-                            } else {
-                                break
-                            }
+                        for photo in photoArray {
+                            let farm = photo[Constants.FlickrResponseKeys.Farm] as! Int
+                            let id = photo[Constants.FlickrResponseKeys.Id] as! String
+                            let server = photo[Constants.FlickrResponseKeys.Server] as! String
+                            let secret = photo[Constants.FlickrResponseKeys.Secret] as! String
+                            let title = photo[Constants.FlickrResponseKeys.Title] as! String
+                            
+                            let _ = Photo(serverID: server, farm: farm, id: id, secret: secret, title: title, pin: pin, context: (UIApplication.shared.delegate as! AppDelegate).stack.context)
                         }
                     }
                     (UIApplication.shared.delegate as! AppDelegate).stack.save()

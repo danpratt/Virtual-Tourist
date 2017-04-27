@@ -97,19 +97,19 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         }
         
         photos?.removeAll()
+        delegate.stack.save()
         
         FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, pin: pin!, completion: { (success) in
             DispatchQueue.main.async {
                 self.reloadActivity.stopAnimating()
                 self.delegate.stack.save()
                 self.photos = self.pin?.album?.allObjects as? [Photo]
+                for photo in self.photos! {
+                    print("From inside reload: \(String(describing: photo.imageURLString))")
+                }
                 self.flickrPhotosCollectionView.reloadData()
             }
         })
-        
-        
-        
-
     }
 
     // MARK: - Collection View Methods

@@ -89,6 +89,7 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
             pinData.append(Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: delegate.stack.context))
             
             FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, pin: pinData[findPinIndexat(latitude: coordinate.latitude, longitude: coordinate.longitude)], completion: { (success) in
+                
                 self.delegate.stack.save()
             })
             
