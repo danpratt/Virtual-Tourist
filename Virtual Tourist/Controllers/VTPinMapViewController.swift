@@ -113,9 +113,11 @@ class VTPinMapViewController: UIViewController, MKMapViewDelegate {
     // Present an alert to let user know there was an error
     
     private func presentNetworkAlert() {
-        let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
-        alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
+            alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     // MARK: - Private Setup Methods
