@@ -46,8 +46,8 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
             photos = pin?.album?.allObjects as? [Photo]
             
             // If the user has tapped on the pin too soon, Flickr may not have sent results back yet
-            // Check to see if there is anything, or if there is the expected 30 items
-            if (photos?.count == nil) || (photos?.count)! < 30 {
+            // Check to see if anything is there yet
+            if (photos?.count == nil) || (photos?.count == 0) {
                 
                 // If we don't see info from flickr yet, start activity indicator, and disable the delete button
                 reloadActivity.startAnimating()
