@@ -54,18 +54,18 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
                 self.deletePhotosButton.isEnabled = false
                 
                 // Wait five seconds, then check again
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
                     self.reloadActivity.stopAnimating()
                     self.photos?.removeAll()
                     self.photos = self.pin?.album?.allObjects as? [Photo]
-                    // If we still don't see anything, then we need to let the user know
+                    self.deletePhotosButton.isEnabled = true
+                    // If we still don't see anything, then we will make a final effort
+                    // Just in case there aren't any photos due to a network error
                     if self.photos?.count == 0 {
-                        self.reloadButton.isEnabled = false
-                        self.reloadButton.isHidden = false
-                        self.reloadButton.setTitle("No Photos Found", for: UIControlState.disabled)
+                        self.deleteButtonPressed(self)
+                        self.reloadNewPhotosButtonPressed(self)
                     } else {
-                        // If we found something, re-enable the delete button and reload the data
-                        self.deletePhotosButton.isEnabled = true
+                        // If we found something reload the data into the collection view
                         self.flickrPhotosCollectionView.reloadData()
                     }
                 })
@@ -111,6 +111,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     @IBAction func reloadNewPhotosButtonPressed(_ sender: Any) {
         // Get rid of the reload button and display edit button instead of done again
         deleteButtonPressed(self)
+        deletePhotosButton.isEnabled = false
         reloadActivity.startAnimating()
         
         for picture in (pin?.album)! {
@@ -121,9 +122,9 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
         delegate.stack.save()
         
         FlickrNetworkSearch.findFlickrImagesAtLocation(latitude: (pin?.latitude)!, longitude: (pin?.longitude)!, pin: pin!, completion: { (success) in
-            // Either way we need to stop the animation
             if success {
                 DispatchQueue.main.async {
+                    self.deletePhotosButton.isEnabled = true
                     self.reloadActivity.stopAnimating()
                     self.delegate.stack.save()
                     self.photos = self.pin?.album?.allObjects as? [Photo]
@@ -132,6 +133,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
             } else {
                 DispatchQueue.main.async {
                     self.reloadActivity.stopAnimating()
+                    self.deletePhotosButton.isEnabled = true
                     let alert = UIAlertController.init(title: "Error loading", message: "There was an error loading images from Flickr.  Please check your network connetion and try again", preferredStyle: .alert)
                     alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
                     self.present(alert, animated: true, completion: nil)
