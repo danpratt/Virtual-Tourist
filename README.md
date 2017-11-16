@@ -10,7 +10,7 @@ This is an iOS app written in Swift that allows a user to drop a pin on a map, a
 
 ## Technologies Used In Application:
 
-* Swift 3.1
+* Swift 3.1 (Updated to 4.0)
 * CoreData
 * MapKit
 * Flickr's Web API
