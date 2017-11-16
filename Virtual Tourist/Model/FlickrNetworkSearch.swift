@@ -107,8 +107,12 @@ class FlickrNetworkSearch {
                             let _ = Photo(serverID: server, farm: farm, id: id, secret: secret, title: title, pin: pin, context: (UIApplication.shared.delegate as! AppDelegate).stack.context)
                         }
                     }
-                    (UIApplication.shared.delegate as! AppDelegate).stack.save()
-                    completion(true, false)
+                    
+                    DispatchQueue.main.async {
+                        (UIApplication.shared.delegate as! AppDelegate).stack.save()
+                        completion(true, false)
+                    }
+                    
                     
                     
             }
