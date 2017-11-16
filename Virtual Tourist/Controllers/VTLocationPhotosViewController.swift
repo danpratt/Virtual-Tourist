@@ -17,6 +17,7 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
     // MARK: - Variables
     var pin: Pin?
     var photos: [Photo]?
+    var index: Int?
     
     // Booleans
     var deleteModeOn = false
@@ -202,6 +203,8 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
                     return
                 }
                 
+                index = indexPath.row
+                
                 performSegue(withIdentifier: "PhotoDetailSegue", sender: photo)
             }
         }
@@ -216,7 +219,8 @@ class VTLocationPhotosViewController: UIViewController, UICollectionViewDataSour
             let flickrPhotoDetailView = segue.destination as! VTPhotoDetailViewController
             flickrPhotoDetailView.photo = UIImage(data: photo.rawImageData! as Data)
             flickrPhotoDetailView.titleString = photo.title
-            
+            flickrPhotoDetailView.allPhotos = photos
+            flickrPhotoDetailView.photoIndex = index
         }
     }
     
