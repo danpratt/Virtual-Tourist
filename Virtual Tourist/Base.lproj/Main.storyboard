@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F67a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4MS-Oj-NVB">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4MS-Oj-NVB">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,7 +15,7 @@
             <objects>
                 <navigationController id="4MS-Oj-NVB" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Yac-jt-8Nm">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -221,29 +221,45 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dQD-uR-r0t">
-                                <rect key="frame" x="16" y="64" width="343" height="545"/>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="hYY-pn-qcg">
                                 <rect key="frame" x="16" y="617" width="343" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tpb-oj-9nK">
+                                <rect key="frame" x="16" y="68" width="343" height="541"/>
+                                <subviews>
+                                    <imageView multipleTouchEnabled="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dQD-uR-r0t">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="545"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="545" id="98d-aQ-q03"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="dQD-uR-r0t" firstAttribute="leading" secondItem="Tpb-oj-9nK" secondAttribute="leading" id="RK9-11-Atq"/>
+                                    <constraint firstAttribute="trailing" secondItem="dQD-uR-r0t" secondAttribute="trailing" id="nhK-h9-k9z"/>
+                                    <constraint firstItem="dQD-uR-r0t" firstAttribute="top" secondItem="Tpb-oj-9nK" secondAttribute="top" id="o2U-Uf-eHz"/>
+                                    <constraint firstItem="dQD-uR-r0t" firstAttribute="centerX" secondItem="Tpb-oj-9nK" secondAttribute="centerX" id="uRI-2I-6wN"/>
+                                    <constraint firstAttribute="bottom" secondItem="dQD-uR-r0t" secondAttribute="bottom" id="yRJ-yg-UkM"/>
+                                </constraints>
+                            </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="hYY-pn-qcg" firstAttribute="top" secondItem="dQD-uR-r0t" secondAttribute="bottom" constant="8" id="2a7-FN-Npy"/>
-                            <constraint firstItem="dQD-uR-r0t" firstAttribute="trailing" secondItem="Nvc-mF-l8B" secondAttribute="trailingMargin" id="Bxs-FG-Luq"/>
-                            <constraint firstItem="hYY-pn-qcg" firstAttribute="leading" secondItem="dQD-uR-r0t" secondAttribute="leading" id="COm-kv-Po2"/>
-                            <constraint firstItem="dQD-uR-r0t" firstAttribute="leading" secondItem="Nvc-mF-l8B" secondAttribute="leadingMargin" id="XVV-kg-paq"/>
+                            <constraint firstItem="Tpb-oj-9nK" firstAttribute="top" secondItem="zX0-CK-eep" secondAttribute="bottom" constant="4" id="3UT-LE-M4G"/>
+                            <constraint firstItem="hYY-pn-qcg" firstAttribute="leading" secondItem="Tpb-oj-9nK" secondAttribute="leading" id="Pqu-ZX-POu"/>
+                            <constraint firstAttribute="trailing" secondItem="Tpb-oj-9nK" secondAttribute="trailing" constant="16" id="YCu-dS-tM0"/>
+                            <constraint firstItem="hYY-pn-qcg" firstAttribute="trailing" secondItem="Tpb-oj-9nK" secondAttribute="trailing" id="c4g-jV-ezO"/>
                             <constraint firstItem="uiz-N6-QvQ" firstAttribute="top" secondItem="hYY-pn-qcg" secondAttribute="bottom" constant="20" id="iin-ZP-nHK"/>
-                            <constraint firstItem="dQD-uR-r0t" firstAttribute="top" secondItem="zX0-CK-eep" secondAttribute="bottom" id="r9B-wR-w9d"/>
-                            <constraint firstItem="hYY-pn-qcg" firstAttribute="trailing" secondItem="dQD-uR-r0t" secondAttribute="trailing" id="tAO-lZ-ndG"/>
+                            <constraint firstItem="hYY-pn-qcg" firstAttribute="top" secondItem="Tpb-oj-9nK" secondAttribute="bottom" constant="8" id="k0n-Y9-M02"/>
+                            <constraint firstItem="Tpb-oj-9nK" firstAttribute="leading" secondItem="Nvc-mF-l8B" secondAttribute="leading" constant="16" id="rtR-NY-yM8"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="flickrPhoto" destination="dQD-uR-r0t" id="4Ie-Nm-fgO"/>
+                        <outlet property="photoScrollView" destination="Tpb-oj-9nK" id="Dhp-I0-K5q"/>
                         <outlet property="photoTitle" destination="hYY-pn-qcg" id="j1H-FD-IMp"/>
                     </connections>
                 </viewController>
