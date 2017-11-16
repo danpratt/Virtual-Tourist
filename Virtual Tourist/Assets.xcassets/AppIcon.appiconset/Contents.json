@@ -95,6 +95,12 @@
       "idiom" : "ipad",
       "filename" : "iPad Pro Icon iOS 9@2x.png",
       "scale" : "2x"
+    },
+    {
+      "size" : "1024x1024",
+      "idiom" : "ios-marketing",
+      "filename" : "VT_AppStore_Icon.png",
+      "scale" : "1x"
     }
   ],
   "info" : {
