@@ -89,10 +89,19 @@ class VTPhotoDetailViewController: UIViewController, UIScrollViewDelegate {
     
     private func updateCurrentPhoto() {
         let currentPhoto = allPhotos![photoIndex!]
+        guard let imageData = currentPhoto.rawImageData, let image = UIImage(data: imageData as Data) else {
+            print("Image is nil")
+            return()
+        }
+        
+        // if we get here, we are good to add the transitions
         flickrPhoto.layer.add(transition, forKey: nil)
         photoTitle.layer.add(transition, forKey: nil)
-        flickrPhoto.image = UIImage(data: currentPhoto.rawImageData! as Data)
+        
+        // update photo and text
+        flickrPhoto.image = image
         photoTitle.text = currentPhoto.title
+        
     }
     
     // MARK: - UIScrollView Delegate Functions
