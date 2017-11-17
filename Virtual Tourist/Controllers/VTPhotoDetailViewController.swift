@@ -16,6 +16,7 @@ class VTPhotoDetailViewController: UIViewController, UIScrollViewDelegate {
     // for swiping
     var allPhotos: [Photo]?
     var photoIndex: Int?
+    let transition = CATransition()
     
     // MARK: - IBOutlets
     @IBOutlet weak var flickrPhoto: UIImageView!
@@ -29,9 +30,15 @@ class VTPhotoDetailViewController: UIViewController, UIScrollViewDelegate {
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(didSwipeRight))
         swipeLeft.direction = .left
         swipeRight.direction = .right
-        
+    
+        // setup gestures for recognizing swipes
         flickrPhoto.addGestureRecognizer(swipeLeft)
         flickrPhoto.addGestureRecognizer(swipeRight)
+        
+        // setup swipe animation
+        transition.duration = 0.3
+        transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        transition.type = kCATransitionPush
         
         // The photo should always be there
         if let photo = self.photo {
@@ -62,6 +69,7 @@ class VTPhotoDetailViewController: UIViewController, UIScrollViewDelegate {
         } else {
             photoIndex = 0
         }
+        transition.subtype = kCATransitionFromRight
         updateCurrentPhoto()
     }
     
@@ -75,11 +83,14 @@ class VTPhotoDetailViewController: UIViewController, UIScrollViewDelegate {
         } else {
             photoIndex = photosCount - 1
         }
+        transition.subtype = kCATransitionFromLeft
         updateCurrentPhoto()
     }
     
     private func updateCurrentPhoto() {
         let currentPhoto = allPhotos![photoIndex!]
+        flickrPhoto.layer.add(transition, forKey: nil)
+        photoTitle.layer.add(transition, forKey: nil)
         flickrPhoto.image = UIImage(data: currentPhoto.rawImageData! as Data)
         photoTitle.text = currentPhoto.title
     }
