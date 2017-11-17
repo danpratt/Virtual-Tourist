@@ -64,6 +64,12 @@ class VTPhotoDetailViewController: UIViewController, UIScrollViewDelegate {
             print("Error getting indexes")
             return
         }
+        
+        // make sure there is more than one photo (otherwise no point in doing anything)
+        if photosCount <= 1 {
+            return
+        }
+        
         if currentIndex < photosCount - 1 {
             photoIndex = photoIndex! + 1
         } else {
@@ -74,10 +80,17 @@ class VTPhotoDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc private func didSwipeRight() {
+        
         guard let currentIndex = photoIndex, let photosCount = allPhotos?.count else {
             print("Error getting indexes")
             return
         }
+        
+        // make sure there is more than one photo (otherwise no point in doing anything)
+        if photosCount <= 1 {
+            return
+        }
+        
         if currentIndex > 0 {
             photoIndex = photoIndex! - 1
         } else {
